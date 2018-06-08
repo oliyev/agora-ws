@@ -72,8 +72,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('clapped', (data) => onMsgClappedHandler(data)); // userId, msgId, debateId, value: true || false
-
-
+  socket.on('removeUser', (data) => onRemoveUserHandler(data));
 })
 
 server.listen(PORT, () => console.log('Listening on port ' + PORT));
@@ -151,6 +150,29 @@ onMsgClappedHandler = (data) => { // userId, msgId, debateId, value: true || fal
   }
 
   io.to(data.debateId).emit('clapped', debate);
+}
+
+onRemoveUserHandler = (data) => {
+  let debate = debates.find((x) => { return x.id === data.debateId }) || {};
+
+  switch (data.user.stance) {
+    case true:
+      debate._debaterFor = null;
+      break;
+
+    case false:
+      debate._debaterAgainst = null;
+      break;
+
+    case null:
+      let index = debate._spectators.findIndex(data.user);
+      if (index !== -1)
+        debate._spectators.splice(index);
+      break;
+
+    default:
+
+  }
 }
 
 ///////////////////// WORKER METHODS
