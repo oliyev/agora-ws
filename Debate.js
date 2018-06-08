@@ -78,7 +78,15 @@ module.exports = class Debate {
   set stats(stats) { this._stats = stats; }
 
   setUserStance(user) {
-    if (this._debaterFor && this._debaterAgainst){
+    if ((this._debaterFor && user.stance) && !this._debaterAgainst){
+      this._debaterAgainst = user;
+      return false;
+    }
+    else if ((this._debaterAgainst && !user.stance) && !this._debaterFor){
+      this._debaterFor = user;
+      return true;
+    }
+    else if (this._debaterFor && this._debaterAgainst){
       if (user.id !== this._debaterFor.id && user.id !== this._debaterAgainst.id)
         this._spectators.push(user);
       return true;
