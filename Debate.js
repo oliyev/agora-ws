@@ -124,6 +124,7 @@ module.exports = class Debate {
     this._args.push({id:this._id + 'stats', stance: 'stats', content: '', stats: this._stats}) // id, stance, content, clappers, claps
   }
 
+
   toggleTimer(io) {
     if (io){
       let self = this;
