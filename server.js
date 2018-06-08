@@ -120,14 +120,15 @@ gotDebateIdHandler = (socket, data) => {
     console.log('debate found, id: ' + debate.id);
     debate._topic = data.topic
     let userStanceToSpectate = debate.setUserStance(data.user);
-    io.to(id).emit('chatroomReady', {debate: debate, userStanceToSpectate: userStanceToSpectate});
+    io.to(id).emit('chatroomReady', {debate: debate, userStanceToSpectate: userStanceToSpectate, user: data.user});
   }
   else
-    createDebateRoom(id, data.user);
+    createDebateRoom(id, data.user, data.topic);
 }
 
-createDebateRoom = (debateId, user) => {
+createDebateRoom = (debateId, user, topic) => {
   let debate = new Debate(debateId, user);
+  debate._topic = topic;
   debates.push(debate);
   console.log('debate created, id: ' + debateId);
   io.in(debateId).emit('debateCreated', debate);
