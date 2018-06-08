@@ -73,6 +73,7 @@ io.on('connection', (socket) => {
 
   socket.on('clapped', (data) => onMsgClappedHandler(data)); // userId, msgId, debateId, value: true || false
   socket.on('removeUser', (data) => onRemoveUserHandler(data));
+  socket.on('removeDebate', (data) => onRemoveDebateHandler(data));
 })
 
 server.listen(PORT, () => console.log('Listening on port ' + PORT));
@@ -98,7 +99,13 @@ debateTimerHandler = (debate) => {
     debate._roundTime = 0;
     debate.toggleTimer(null);
     debate.calcStats();
-    try { io.to(debateId).emit('endOfDebate', debate); }
+    try {
+      io.to(debateId).emit('endOfDebate', debate);
+      setTimeout( () => {
+        io.to(debateId).emit('gtfo',{ _id: '', _currentDebatingStance: false, _args: [], _spectators: [] });
+        debates = [];
+      }, 10 * 1000)
+    }
     catch (e) { console.log('END OF DEBATE \n' +e); }
   }
   else {
@@ -172,8 +179,10 @@ onRemoveUserHandler = (data) => {
       break;
 
     default:
-
   }
+}
+
+onRemoveDebateHandler = (data) => {
 }
 
 ///////////////////// WORKER METHODS
