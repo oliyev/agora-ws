@@ -79,7 +79,8 @@ module.exports = class Debate {
 
   setUserStance(user) {
     if (this._debaterFor && this._debaterAgainst){
-      this._spectators.push(user);
+      if (user.id !== this._debaterFor.id && user.id !== this._debaterAgainst.id)
+        this._spectators.push(user);
       return true;
     }
     else{
